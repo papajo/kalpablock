@@ -19,11 +19,13 @@ const currentBlockData = [
 		recipient: 'QWDS23LKJASD98QWR'
 	},
 ];
-const nonce = 500;
+//test proofOfWork
+
+console.log(bitcoin.proofOfWork(previousBlockHash, currentBlockData));
 
 //test hashBlock Step using SHA-256 encryption method
 
-console.log(bitcoin.hashBlock(previousBlockHash, currentBlockData, nonce));
+//console.log(bitcoin.hashBlock(previousBlockHash, currentBlockData, nonce));
 
 //The following work fine
 //bitcoin.createNewBlock(1234, 'OIIHASDO23234243', 'UIHKH657532');

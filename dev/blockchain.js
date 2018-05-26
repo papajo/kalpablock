@@ -1,5 +1,5 @@
 const sha256 = require('sha256');
-
+//use strict mode;
 function Blockchain() {
 	this.chain = [];
 	this.pendingTransactions = [];
@@ -43,18 +43,16 @@ Blockchain.prototype.hashBlock = function(previousBlockHash, currentBlockData, n
 	return hash;
 }
 
-Blockchain.prototype.proofOfWork = function(previousBlockHash, currentBlockData) {
-	//repeat until a valid hash starting with '0000' is found
-	//using previousHasBlock and currentBlockData and constantly changing the nonce value
-	//until a valid hash is found. 
-	//return the nonce value that creates a correct hash value.
-	let nonce = 0;
-	let hash = 0;
-	//let hash = this.hashBlock(previousBlockHash, currentBlockData, nonce);
+Blockchain.prototype.proofOfWork = function(previousBlockHash, currentBlockData, nonce) {
+	//repeat the process of hasBlock until it finds the correct hash starting with '0000'
+	//using currentBlockData and previousBlockHash continuously updating the nonce value
+	//returns the nonce value that produces a hash value with starting '0000'.
+	nonce = 0;
+	hash = '';
 	while (hash.substr(0, 4) !== '0000') {
+		hash = this.hashBlock(previousBlockHash, currentBlockData, nonce);
 		nonce++;
-		let hash = this.hashBlock(previousBlockHash, currentBlockData, nonce);
-	}	 
+	}
 	return nonce;
 }
 
