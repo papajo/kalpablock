@@ -1,3 +1,4 @@
 node_modules/
 *.[oa]
 *.~
+.DS_Store
