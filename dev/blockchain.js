@@ -43,15 +43,16 @@ Blockchain.prototype.hashBlock = function(previousBlockHash, currentBlockData, n
 	return hash;
 }
 
-Blockchain.prototype.proofOfWork = function(previousBlockHash, currentBlockData, nonce) {
+Blockchain.prototype.proofOfWork = function(previousBlockHash, currentBlockData) {
 	//repeat the process of hasBlock until it finds the correct hash starting with '0000'
 	//using currentBlockData and previousBlockHash continuously updating the nonce value
 	//returns the nonce value that produces a hash value with starting '0000'.
-	nonce = 0;
-	hash = '';
-	while (hash.substr(0, 4) !== '0000') {
-		hash = this.hashBlock(previousBlockHash, currentBlockData, nonce);
+	let nonce = 0;
+	let hash = this.hashBlock(previousBlockHash, currentBlockData, nonce);
+	while (hash.substring(0, 4) !== '0000') {
 		nonce++;
+		hash = this.hashBlock(previousBlockHash, currentBlockData, nonce);
+		//console.log(hash)
 	}
 	return nonce;
 }

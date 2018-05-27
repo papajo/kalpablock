@@ -21,7 +21,9 @@ const currentBlockData = [
 ];
 //test proofOfWork
 
-console.log(bitcoin.proofOfWork(previousBlockHash, currentBlockData));
+//console.log(bitcoin.proofOfWork(previousBlockHash, currentBlockData));
+//cross validate the nonce
+console.log(bitcoin.hashBlock(previousBlockHash, currentBlockData, 31769));
 
 //test hashBlock Step using SHA-256 encryption method
 
@@ -32,4 +34,4 @@ console.log(bitcoin.proofOfWork(previousBlockHash, currentBlockData));
 //bitcoin.createNewBlock(1235, '323HASDO23234243', '121UIHKH657532');
 //bitcoin.createNewBlock(1236, '2324HASDO23234243', '212UIHKH657532');
 //
-console.log(bitcoin);
+//console.log(bitcoin);
