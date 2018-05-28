@@ -20,8 +20,9 @@ app.get('/blockchain', function(req, res) {
 
 //create a new transaction
 app.post('/transaction', function(req, res) {
-	console.log(req.body);
-	res.send(`transaction recieved in the amount of ${req.body.amount} kalpacoin`);
+	const blockIndex = kalpacoin.createNewTransaction(req.body.amount, req.body.sender, req.body.recipient);
+	res.json({ note: `transaction will be added in block ${blockIndex}.` });
+
 });
 
 //mine a new block
