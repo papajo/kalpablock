@@ -6,6 +6,7 @@ const Blockchain = require('./blockchain');
 const uuid = require('uuid/v1');
 const nodeAddress = uuid().split('-').join('');
 const port = process.argv[2];
+const rp = require('request-promise');
 
 const kalpacoin = new Blockchain();
 
@@ -29,7 +30,7 @@ app.post('/transaction', function(req, res) {
 
 });
 
-//mine a new block
+//mine a new block and process a pending transaction
 app.get('/mine', function(req, res) {
 	const lastBlock = kalpacoin.getLastBlock();
 	const previousBlockHash = lastBlock['hash'];
@@ -51,6 +52,26 @@ app.get('/mine', function(req, res) {
 // register a node with the local server and broadcast that node to the entire network
 app.post('/register-and-broadcast', function(req, res){ 
 	const newNodeUrl = req.body.newNodeUrl;
+	if(bitcoin.networkNodes.indexOf(newNodeUrl) == -1) bitcoin.networkNodes.push(newNodeUrl);
+
+	const regNodesPromies = [];
+	bitcoin.networkNodes.forEach(networkNodeUrl => {
+		// '/register-node'
+		const requestOptions = {
+			uri: networkNodeUrl + '/register-node',
+			method: 'POST',
+			body: { newNodeUrl: newNodeUrl },
+			json: true
+		}; 
+
+		regNodesPromises.push(rp(requestOptions));
+	});
+
+	Promise.all(regNodesPromises)
+	 .then(data => {
+	 	// use the returned data
+	 });
+
 });
 
 // receiving nodes to register a broascasting node Url with the network
