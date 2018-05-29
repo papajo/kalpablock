@@ -48,6 +48,24 @@ app.get('/mine', function(req, res) {
 	})
 });
 
+// register a node with the local server and broadcast that node to the entire network
+app.post('/register-and-broadcast', function(req, res){ 
+	const newNodeUrl = req.body.newNodeUrl;
+});
+
+// receiving nodes to register a broascasting node Url with the network
+app.post('/register-node', function(req, res){ 
+
+
+});
+
+// register multiple nodes at once - after this run's all the nodes will be registerd with the current network
+app.post('/register-nodes-bulk', function(req, res){
+
+
+});
+
+
 app.listen(port, () => {
 	console.log(`Listening on port ${ port }...`);
 });
