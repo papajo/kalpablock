@@ -25,9 +25,9 @@ app.get('/blockchain', function(req, res) {
 
 //create a new transaction
 app.post('/transaction', function(req, res) {
-	const blockIndex = kalpacoin.createNewTransaction(req.body.amount, req.body.sender, req.body.recipient);
+	const newTransaction = req.body;
+	const blockIndex = kalpacoin.addTransactonToPendingTransactions.push(newTransaction);
 	res.json({ note: `transaction will be added in block ${blockIndex}.` });
-
 });
 
 //
