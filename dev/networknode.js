@@ -50,11 +50,11 @@ app.get('/mine', function(req, res) {
 });
 
 // register a node with the local server and broadcast that node to the entire network
-app.post('/register-and-broadcast', function(req, res){ 
+app.post('/register-and-broadcast-node', function(req, res){ 
 	const newNodeUrl = req.body.newNodeUrl;
 	if(kalpacoin.networkNodes.indexOf(newNodeUrl) == -1) kalpacoin.networkNodes.push(newNodeUrl);
 
-	const regNodesPromies = [];
+	const regNodesPromises = [];
 	kalpacoin.networkNodes.forEach(networkNodeUrl => {
 		// '/register-node'
 		const requestOptions = {
@@ -82,7 +82,7 @@ app.post('/register-and-broadcast', function(req, res){
 	 });
 });
 
-// receiving nodes to register a broascasting node Url with the network
+// receiving nodes should register a broascasting node Url with the network
 app.post('/register-node', function(req, res){ 
 	const newNodeUrl = req.body.newNodeUrl;
 	const nodeNotAlreadyPresent = kalpacoin.networkNodes.indexOf(newNodeUrl) == -1
@@ -91,7 +91,7 @@ app.post('/register-node', function(req, res){
 	res.json({ note: 'new node registered successfully!' });
 });
 
-// register multiple nodes at once - after this run's all the nodes will be registerd with the current network
+// register multiple nodes at once - after this runs all the nodes will be registerd with the current network
 app.post('/register-nodes-bulk', function(req, res){
 	const allNetworkNodes = req.body.allNetworkNodes;
 	allNetworkNodes.forEach(networkNodeUrl => {
