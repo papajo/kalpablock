@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false}));
 
 //app.get('/', function(req, res) {
-//	res.send('App started...')
+//	res.send('Nothing here yet.. try others...')
 //})
 
 //fetch entire blockchain
@@ -52,10 +52,10 @@ app.get('/mine', function(req, res) {
 // register a node with the local server and broadcast that node to the entire network
 app.post('/register-and-broadcast', function(req, res){ 
 	const newNodeUrl = req.body.newNodeUrl;
-	if(bitcoin.networkNodes.indexOf(newNodeUrl) == -1) bitcoin.networkNodes.push(newNodeUrl);
+	if(kalpacoin.networkNodes.indexOf(newNodeUrl) == -1) kalpacoin.networkNodes.push(newNodeUrl);
 
 	const regNodesPromies = [];
-	bitcoin.networkNodes.forEach(networkNodeUrl => {
+	kalpacoin.networkNodes.forEach(networkNodeUrl => {
 		// '/register-node'
 		const requestOptions = {
 			uri: networkNodeUrl + '/register-node',
@@ -72,7 +72,7 @@ app.post('/register-and-broadcast', function(req, res){
 	 	const bulkRegisterOptions = {
 	 		uri: newNodeUrl + '/register-nodes-bulk',
 	 		method: 'POST',
-	 		body: { allNetworkNodes: [ ...bitcoin.networkNodes, bitcoin.currentNodeUrl ] },
+	 		body: { allNetworkNodes: [ ...kalpacoin.networkNodes, kalpacoin.currentNodeUrl ] },
 	 		json: true
 	 	};
 	 	return rp(bulkRegisterOptions);	
@@ -84,8 +84,11 @@ app.post('/register-and-broadcast', function(req, res){
 
 // receiving nodes to register a broascasting node Url with the network
 app.post('/register-node', function(req, res){ 
-
-
+	const newNodeUrl = req.body.newNodeUrl;
+	const nodeNotAlreadyPresent = kalpacoin.networkNodes.indexOf(newNodeUrl) == -1
+	const notCurrentNode = kalpacoin.currentNodeUrl !== newNodeUrl;
+	if (nodeNotAlreadyPresent && notCurrentNode) kalpacoin.networkNodes.push(newNodeUrl);
+	res.json({ note: 'new node registered successfully!' });
 });
 
 // register multiple nodes at once - after this run's all the nodes will be registerd with the current network
