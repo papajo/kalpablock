@@ -93,8 +93,14 @@ app.post('/register-node', function(req, res){
 
 // register multiple nodes at once - after this run's all the nodes will be registerd with the current network
 app.post('/register-nodes-bulk', function(req, res){
+	const allNetworkNodes = req.body.allNetworkNodes;
+	allNetworkNodes.forEach(networkNodeUrl => {
+		const nodeNotAlreadyPresent = kalpacoin.networkNodes.indexOf(networkNodeUrl) == -1;
+		const notCurrentNode = kalpacoin.currentNodeUrl !== networkNodeUrl;
+		if (nodeNotAlreadyPresent && notCurrentNode) kalpacoin.networkNodes.push(networkNodeUrl);
+	});
 
-
+	res.json({ note: 'bulk registration successful!' });
 });
 
 
