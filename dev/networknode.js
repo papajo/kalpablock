@@ -30,6 +30,28 @@ app.post('/transaction', function(req, res) {
 
 });
 
+//
+app.post('/transaction/broadcast', function(req, res) {
+	const newTransaction = kalpacoin.createNewTransaction(req.body.amount, req.body.sender, req.body.recipient);
+	kalpacoin.addTransactonToPendingTransactions(newTransaction);
+
+	const requestPromises = [];
+	kalpacoin.networkNodes.forEach(networkNodeUrl => {
+		const requestOptions = {
+			uri: networkNodeUrl + '/transaction',
+			method: 'POST',
+			body: newTransaction,
+			json: true
+		};
+
+		requestPromises.push(rp(requestOptions));
+	});
+
+	Promise.all(requestPromises)
+	.then(data => {
+		res.json({ note: 'transaction created and brodcast successfully!' });
+	});
+});
 //mine a new block and process a pending transaction
 app.get('/mine', function(req, res) {
 	const lastBlock = kalpacoin.getLastBlock();
