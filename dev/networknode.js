@@ -63,12 +63,39 @@ app.get('/mine', function(req, res) {
 	const nonce = kalpacoin.proofOfWork(previousBlockHash, currentBlockData);
 	const blockHash = kalpacoin.hashBlock(previousBlockHash, currentBlockData, nonce);
 	//mining reward 12.5 as of 2018
-	kalpacoin.createNewTransaction(12.5, "00", nodeAddress);
+	//kalpacoin.createNewTransaction(12.5, "00", nodeAddress);
 	const newBlock = kalpacoin.createNewBlock(nonce, previousBlockHash, blockHash);
 
-	res.json({ note: "New block mined successfully",
-			   block: newBlock	
+	const requestPromises = [];
+	kalpacoin.networkNodes.forEach(networkNodeUrl => {
+		const requestOptions = {
+			uri: networkNodeUrl + '/receive-new-block',
+			method: 'POST',
+			body: { newBlock: newBlock },
+			json: true
+		};
+		requestPromises.push(rp(requestOptions));
+	});
+	Promise.all(requestPromises)
+	.then(data => {
+		const requestOptions = {
+			uri: kalpacoin.currentNodeUrl + '/transaction/broadcast',
+			method: 'POST',
+			body: {
+				amount: 12.5,
+				sender: "00",
+				recipient: nodeAddress
+			},
+			json: true
+		};
+		return rp(requestOptions);
 	})
+	.then(data => {
+		res.json({ note: "New block mined & broadcast successfully",
+			   block: newBlock	
+		});
+	});
+	
 });
 
 // register a node with the local server and broadcast that node to the entire network
