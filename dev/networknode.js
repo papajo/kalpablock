@@ -98,6 +98,27 @@ app.get('/mine', function(req, res) {
 	
 });
 
+// receive-new-block
+app.post('/receive-new-block', function(req, res){
+	const newBlock = req.body.newBlock;
+	const lastBlock = kalpacoin.getLastBlock();
+	const correctHash = lastBlock.hash === newBlock.previousBlockHash;
+	const correctIndex = lastBlock['index'] + 1 === newBlock['index'];
+	if (correctHash && correctIndex) {
+		kalpacoin.chain.push(newBlock);
+		kalpacoin.pendingTransactions = [];
+		res.json({ 
+			note: 'New Block received and accepted',
+			newBlock: newBlock
+		});
+	} else {
+		res.json({ 
+			note: 'New Block rejected',
+			newBlock: newBlock
+		});
+	}
+});
+
 // register a node with the local server and broadcast that node to the entire network
 app.post('/register-and-broadcast-node', function(req, res){ 
 	const newNodeUrl = req.body.newNodeUrl;
