@@ -26,14 +26,14 @@ app.get('/blockchain', function(req, res) {
 //create a new transaction
 app.post('/transaction', function(req, res) {
 	const newTransaction = req.body;
-	const blockIndex = kalpacoin.addTransactonToPendingTransactions.push(newTransaction);
+	const blockIndex = kalpacoin.addTransactionToPendingTransactions.push(newTransaction);
 	res.json({ note: `transaction will be added in block ${blockIndex}.` });
 });
 
 //
 app.post('/transaction/broadcast', function(req, res) {
 	const newTransaction = kalpacoin.createNewTransaction(req.body.amount, req.body.sender, req.body.recipient);
-	kalpacoin.addTransactonToPendingTransactions(newTransaction);
+	kalpacoin.addTransactionToPendingTransactions(newTransaction);
 
 	const requestPromises = [];
 	kalpacoin.networkNodes.forEach(networkNodeUrl => {
@@ -107,7 +107,7 @@ app.post('/register-and-broadcast-node', function(req, res){
 // receiving nodes should register a broascasting node Url with the network
 app.post('/register-node', function(req, res){ 
 	const newNodeUrl = req.body.newNodeUrl;
-	const nodeNotAlreadyPresent = kalpacoin.networkNodes.indexOf(newNodeUrl) == -1
+	const nodeNotAlreadyPresent = kalpacoin.networkNodes.indexOf(newNodeUrl) == -1;
 	const notCurrentNode = kalpacoin.currentNodeUrl !== newNodeUrl;
 	if (nodeNotAlreadyPresent && notCurrentNode) kalpacoin.networkNodes.push(newNodeUrl);
 	res.json({ note: 'new node registered successfully!' });
