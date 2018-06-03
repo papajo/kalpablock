@@ -73,16 +73,22 @@ Blockchain.prototype.proofOfWork = function(previousBlockHash, currentBlockData)
 
 Blockchain.prototype.chainIsValid = function(blockchain) {
 	let validChain = true;
-
+	// loop through entire blockchain to ensure the validity
 	for(var i = 1; i < blockchain.length; i++) {
-		const currentBlock = Blockchain[i];
-		const previousBlock = Blockchain[i - 1];
-		const blockHash = this.hashBlock(previousBlock['hash'], {transactions: currentBlock['transactions'], index: currentBlock['index']}, currentBlock['nonce']);
+		const currBlock = blockchain[i];
+		const prevBlock = blockchain[i - 1];
+		// save each block and rehash it
+		const blockHash = this.hashBlock(prevBlock['hash'], {transactions: currBlock['transactions'], index: currBlock['index']}, currBlock['nonce']);
+		// validate the absolute hash data
 		if (blockHash.substring(0, 4) !== '0000') validChain = false;
-		if (currentBlock['previousBlockHash'] !== previousBlock['hash']) validChain = false;
+		// cross validate the hash data between adjacent blocks
+		if (currBlock['previousBlockHash'] !== prevBlock['hash']) validChain = false;
 
+		// console log
+		console.log('previousBlockHash => ', prevBlock['hash']);
+		console.log('currentBlockHash => ', currBlock['hash']);
 	};
-
+	// check the genesis block to make sure its a valid block.
 	const genesisBlock = blockchain[0];
 	const correctNonce = genesisBlock['nonce'] === 100;
 	const correctPreviousBlockHash = genesisBlock['previousBlockHash'] === '0';
