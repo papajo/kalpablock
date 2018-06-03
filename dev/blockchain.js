@@ -55,7 +55,7 @@ Blockchain.prototype.hashBlock = function(previousBlockHash, currentBlockData, n
 	const dataAsString = previousBlockHash + nonce.toString() + JSON.stringify(currentBlockData);
 	const hash = sha256(dataAsString);
 	return hash;
-}
+};
 
 Blockchain.prototype.proofOfWork = function(previousBlockHash, currentBlockData) {
 	//repeat the process of hasBlock until it finds the correct hash starting with '0000'
@@ -67,8 +67,32 @@ Blockchain.prototype.proofOfWork = function(previousBlockHash, currentBlockData)
 		nonce++;
 		hash = this.hashBlock(previousBlockHash, currentBlockData, nonce);
 		//console.log(hash)
-	}
+	}	
 	return nonce;
-}
+};
+
+Blockchain.prototype.chainIsValid = function(blockchain) {
+	let validChain = true;
+
+	for(var i = 1; i < blockchain.length; i++) {
+		const currentBlock = Blockchain[i];
+		const previousBlock = Blockchain[i - 1];
+		const blockHash = this.hashBlock(previousBlock['hash'], {transactions: currentBlock['transactions'], index: currentBlock['index']}, currentBlock['nonce']);
+		if (blockHash.substring(0, 4) !== '0000') validChain = false;
+		if (currentBlock['previousBlockHash'] !== previousBlock['hash']) validChain = false;
+
+	};
+
+	const genesisBlock = blockchain[0];
+	const correctNonce = genesisBlock['nonce'] === 100;
+	const correctPreviousBlockHash = genesisBlock['previousBlockHash'] === '0';
+	const correctHash = genesisBlock['hash'] === '0';
+	const correctTransactions = genesisBlock['transactions'].length === 0;
+
+	if (!correctNonce || !correctPreviousBlockHash || !correctHash || !correctTransactions) validChain = false;
+	
+	return validChain;
+};
+
 
 module.exports = Blockchain;
