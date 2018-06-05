@@ -173,6 +173,46 @@ app.post('/register-nodes-bulk', function(req, res){
 	res.json({ note: 'bulk registration successful!' });
 });
 
+app.get('/consensus', function(req, res) {
+	const requestPromises = [];
+	kalpacoin.networkNodes.forEach(networkNodeUrl => {
+		const requestOptions = {
+			uri: networkNodeUrl + '/blockchain',
+			method: 'GET',
+			json: true
+		};
+		reqPromises.push(rp(requestOptions));
+	});
+	Promise.all(requestPromises)
+	.then(blockchainData => {
+		const currentChainLength = kalpacoin.chain.length;
+		let maxChainLength = currentChainLength;
+		let newLongestChain = null;
+		let newPendingTransactions = null;
+		blockchainData.forEach(blockchain => {
+			//if one of the blockchains is longer than the one in currentnode
+			if (blockchain.chain.length > maxChainLength) {
+				maxChainLength = blockchain.chain.length;
+				newLongestChain = blockchain.chain;
+				newPendingTransactions = blockchain.pendingTransactions;	
+			};
+		});
+		if (!newLongestChain || (newLongestChain && !kalpacoin.chainIsValid(newLongestChain))) {
+			res.json({
+				note: 'The current chain has not been replaced',
+				chain: kalpacoin.chain
+			});
+		}
+		else if (newLongestChain && kalpacoin.chainIsValid(newLongestChain)) {
+			kalpacoin.chain = newLongestChain;
+			kalpacoin.pendingTransactions = newPendingTransactions;
+			res.json({
+				note: 'This chain has been replaced',
+				chain: kalpacoin.chain
+			});
+		}
+	});
+});
 
 app.listen(port, () => {
 	console.log(`Listening on port ${ port }...`);
