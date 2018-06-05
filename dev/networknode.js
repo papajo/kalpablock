@@ -26,7 +26,7 @@ app.get('/blockchain', function(req, res) {
 //create a new transaction
 app.post('/transaction', function(req, res) {
 	const newTransaction = req.body;
-	const blockIndex = kalpacoin.addTransactionToPendingTransactions.push(newTransaction);
+	const blockIndex = kalpacoin.addTransactionToPendingTransactions(newTransaction);
 	res.json({ note: `transaction will be added in block ${blockIndex}.` });
 });
 
@@ -181,7 +181,7 @@ app.get('/consensus', function(req, res) {
 			method: 'GET',
 			json: true
 		};
-		reqPromises.push(rp(requestOptions));
+		requestPromises.push(rp(requestOptions));
 	});
 	Promise.all(requestPromises)
 	.then(blockchainData => {
