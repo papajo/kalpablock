@@ -203,7 +203,8 @@ app.get('/consensus', function(req, res) {
 				chain: kalpacoin.chain
 			});
 		}
-		else if (newLongestChain && kalpacoin.chainIsValid(newLongestChain)) {
+		//else if (newLongestChain && kalpacoin.chainIsValid(newLongestChain)) {
+		else {
 			kalpacoin.chain = newLongestChain;
 			kalpacoin.pendingTransactions = newPendingTransactions;
 			res.json({
