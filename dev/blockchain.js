@@ -126,20 +126,23 @@ Blockchain.prototype.getTransaction = function(transactionId) {
 	};
 }
 
-Blockchain.prototype.getAddress = function(address) {
-	let correctAddress = null;
-	let correctBlock = null;
+Blockchain.prototype.getAddressData = function(address) {
+	let addressTransactions = [];
 	this.chain.forEach(block => {
 		block.transactions.forEach(transaction => {
-			if (transaction.recipient === address) {
-				correctAddress = address;
-				correctBlock = block;
+			if (transaction.sender === address || transaction.recipient === address) {
+				addressTransactions.push(transaction);
 			};
 		});
 	});
+	let balance = 0;
+	addressTransactions.forEach(transaction => {
+		if (transaction.recipient === address) balance += transaction.amount;
+		else if (transaction.sender === address) balance -= transaction.amount;
+	})
 	return {
-		recipient: correctAddress,
-		block: correctBlock
+		addresstransactions: addressTransactions,
+		addressBalance: balance
 	}
 }
 
