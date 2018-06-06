@@ -227,14 +227,19 @@ app.get('/block/:blockHash', function(req, res) {
 
 app.get('/transaction/:transactionId', function(req, res) {
 	const transactionId = req.params.transactionId;
-	const correctTransactionId = kalpacoin.getTransaction(transactionId);
+	const transactionData = kalpacoin.getTransaction(transactionId);
 	res.json({
-		transId: correctTransactionId
+		transaction: transactionData.transaction,
+		block: transactionData.block
 	});
 });
 
 app.get('/address/:address', function(req, res) {
-
+   	const address = req.params.address;
+   	const correctAddress = kalpacoin.getAddress(address);
+   	res.json({
+   		address: correctAddress
+   	})
 });
 
 
