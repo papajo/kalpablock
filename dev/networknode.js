@@ -215,6 +215,22 @@ app.get('/consensus', function(req, res) {
 	});
 });
 
+//Block Explorer endpoints
+
+app.get('/block/:blockHash', function(req, res) {
+
+});
+
+app.get('/transaction/:transactionId', function(req, res) {
+
+});
+
+app.get('/address/:address', function(req, res) {
+
+});
+
+
+
 app.listen(port, () => {
 	console.log(`Listening on port ${ port }...`);
 });
