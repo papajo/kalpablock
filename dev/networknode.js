@@ -218,7 +218,11 @@ app.get('/consensus', function(req, res) {
 //Block Explorer endpoints
 
 app.get('/block/:blockHash', function(req, res) {
-
+	const blockHash = req.params.blockHash;
+	const correctBlock = kalpacoin.getBlock(blockHash);
+	res.json({ 
+		block: correctBlock
+	});
 });
 
 app.get('/transaction/:transactionId', function(req, res) {
